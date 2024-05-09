@@ -5,15 +5,14 @@ import pprint
 import subprocess
 import sys
 
+import dataset
 import matplotlib.pyplot as plt
+import music_x_transformers
 import numpy as np
+import representation
 import torch
 import torch.utils.data
 import tqdm
-
-import dataset
-import music_x_transformers
-import representation
 import utils
 
 
@@ -236,7 +235,7 @@ def main():
     encoding = representation.load_encoding(args.in_dir / "encoding.json")
 
     # Create the dataset and data loader
-    logging.info(f"Creating the data loader...")
+    logging.info("Creating the data loader...")
     test_dataset = dataset.MusicDataset(
         args.names,
         args.in_dir,
@@ -253,7 +252,7 @@ def main():
     )
 
     # Create the model
-    logging.info(f"Creating the model...")
+    logging.info("Creating the model...")
     model = music_x_transformers.MusicXTransformer(
         dim=train_args["dim"],
         encoding=encoding,
