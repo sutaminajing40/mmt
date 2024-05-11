@@ -2,13 +2,10 @@ import json
 from itertools import combinations
 
 # 不協和音と見なされるピッチの差
-DISSONANT_INTERVALS = {
-    1, 2, 6, 10, 11, 13, 14, 18, 22, 23,
-    25, 26, 30, 34, 35, 37, 38, 42, 46, 47
-    }
+DISSONANT_INTERVALS = {1, 2, 6, 10, 11}
 
 # 調査するtimeの閾値
-TIME_THRESHOLD = 6  # この値以下のtimeのみを分析対象とする
+TIME_THRESHOLD = 48 * 16   # この値以下のtimeのみを分析対象とする
 
 
 def count_dissonances_in_tracks(file_path):
@@ -24,8 +21,9 @@ def count_dissonances_in_tracks(file_path):
         for note in track['notes']:
             start_time = note['time']
             end_time = start_time + note['duration']
+            normalized_pitch = note['pitch'] % 12
             if start_time <= TIME_THRESHOLD:
-                notes_with_duration.append((start_time, end_time, note['pitch']))
+                notes_with_duration.append((start_time, end_time, normalized_pitch))
 
     # 時間範囲が重なるノートのピッチ間で不協和音をカウント
     for (start1, end1, pitch1), (start2, end2, pitch2) in combinations(notes_with_duration, 2):
@@ -43,7 +41,7 @@ if __name__ == "__main__":
     dimensions = [64, 128, 256, 512, 1024]
     for dim in dimensions:
         # ファイルパス
-        file_path = f'exp/sod/ape/dim{dim}/samples/json/0_4-beat-continuation.json'
+        file_path = f'exp/sod/ape/dim{dim}/samples/json/0_unconditioned.json'
         # 不協和音の数を計算
         dissonance_count = count_dissonances_in_tracks(file_path)
-        print(f"Total dissonances found(dim={dim}): {dissonance_count}")
+        print(f"次元数={dim}の場合の不協和音の数: {dissonance_count}")
